@@ -1,7 +1,7 @@
 #ifndef SQLIB_TRANSACTION_HPP
 #define SQLIB_TRANSACTION_HPP
 
-#include "sqlib.h"
+#include "sqlib.hpp"
 
 namespace sqlib
 {

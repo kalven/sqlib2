@@ -5,7 +5,6 @@
 
 namespace sqlib
 {
-    template<class... Cols>
     class statement : public statement_base
     {
       public:
@@ -18,7 +17,8 @@ namespace sqlib
         {
         }
 
-        statement& operator()(const Cols&... args)
+        template<class... Args>
+        statement& operator()(const Args&... args)
         {
             assert(m_prepared);
             reset();

@@ -24,11 +24,11 @@ int test_main(int, char**)
         db1.db().execute_sql("create table node_meta (node integer, key_id integer, value text)");
         db1.db().execute_sql("create table links (from_node integer, to_node integer)");
 
-        statement<string>         add_tag(db1.db(), "insert into tags values(?1)");
-        statement<string>         add_key(db1.db(), "insert into keys values(?1)");
-        statement<int,int>        add_node_tag(db1.db(), "insert into node_tags values(?1,?2)");
-        statement<int,int,string> add_node_meta(db1.db(), "insert into node_meta values(?1,?2,?3)");
-        statement<int,int>        add_link(db1.db(), "insert into links values(?1,?2)");
+        statement add_tag(db1.db(), "insert into tags values(?1)");
+        statement add_key(db1.db(), "insert into keys values(?1)");
+        statement add_node_tag(db1.db(), "insert into node_tags values(?1,?2)");
+        statement add_node_meta(db1.db(), "insert into node_meta values(?1,?2,?3)");
+        statement add_link(db1.db(), "insert into links values(?1,?2)");
 
         query<string,string> get_node_meta(db1.db(), "select key,value from keys,node_meta where node_meta.node = ?1 and node_meta.key_id = keys.rowid order by key");
         query<string>        get_tags_by_node(db1.db(), "select tag from tags,node_tags where node_tags.node = ?1 and node_tags.tag_id = tags.rowid order by tag");
@@ -97,7 +97,7 @@ int test_main(int, char**)
         test_db db1("db_test.db");
 
         db1.db().execute_sql("create table nodes (node integer primary key)");
-        statement<int> create_node(db1.db(), "insert into nodes values(?1)");
+        statement create_node(db1.db(), "insert into nodes values(?1)");
 
         create_node(1);
 
@@ -113,6 +113,18 @@ int test_main(int, char**)
         BOOST_CHECK(caught_exception == true);
 
         db1.remove_on_close();
+    }
+
+    {
+        database db(":memory:");
+
+        db.execute_sql("create table nodes (node integer primary key)");
+        statement create(db, "insert into nodes values(?1)");
+
+        std::int64_t id1 = create(null).last_insert_id();
+        std::int64_t id2 = create(null).last_insert_id();
+
+        BOOST_CHECK(id1 != id2);
     }
 
     return 0;

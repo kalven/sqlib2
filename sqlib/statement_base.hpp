@@ -4,6 +4,7 @@
 #include "database.hpp"
 #include "error.hpp"
 #include "tracing.hpp"
+#include "null.hpp"
 
 #include <string>
 #include <vector>
@@ -62,6 +63,11 @@ namespace sqlib
         inline void bind_arg(sqlite3_stmt* stmt, int slot, const blob_type& arg)
         {
             sqlite3_bind_blob(stmt, slot, arg.size() == 0 ? "" : &arg[0], arg.size(), SQLITE_STATIC);
+        }
+
+        inline void bind_arg(sqlite3_stmt* stmt, int slot, const null_type& arg)
+        {
+            sqlite3_bind_null(stmt, slot);
         }
     }
 

@@ -48,7 +48,7 @@ int test_main(int, char **)
         test_db db1("insert_select_test.db");
         db1.db().execute_sql(table_def);
 
-        statement<int,string> insert1(db1.db(), "insert into table1 (col1,col2) values(?1,?2)");
+        statement insert1(db1.db(), "insert into table1 (col1,col2) values(?1,?2)");
 
         insert1(1,"first")(2,"second")(3,"third");
 
@@ -67,10 +67,10 @@ int test_main(int, char **)
 
         db1.db().execute_sql(table_def);
 
-        statement<int,string> insert(db1.db(), "insert into table1 (col1,col2) values(?1,?2)");
+        statement insert(db1.db(), "insert into table1 (col1,col2) values(?1,?2)");
         insert(1,"first")(2,"second")(3,"third");
 
-        statement<string,int> update1(db1.db(), "update table1 set col2=?1 where col1=?2");
+        statement update1(db1.db(), "update table1 set col2=?1 where col1=?2");
         BOOST_CHECK(update1("uno",1).affected_rows() == 1);
         BOOST_CHECK(update1("dos",2).affected_rows() == 1);
         BOOST_CHECK(update1("tres",3).affected_rows() == 1);
@@ -90,10 +90,10 @@ int test_main(int, char **)
 
         db1.db().execute_sql(table_def);
 
-        statement<int,string> insert(db1.db(), "insert into table1 (col1,col2) values(?1,?2)");
+        statement insert(db1.db(), "insert into table1 (col1,col2) values(?1,?2)");
         insert(1,"first")(2,"second")(3,"third");
 
-        statement<string> delete1(db1.db(), "delete from table1 where col2=?1");
+        statement delete1(db1.db(), "delete from table1 where col2=?1");
         BOOST_CHECK(delete1("third").affected_rows() == 1);
 
         query<string> query1(db1.db(), "select col2 from table1 order by col1 asc");
@@ -117,7 +117,7 @@ int test_main(int, char **)
         test_db db1("transaction_test.db");
         db1.db().execute_sql(table_def);
 
-        statement<int,string> insert(db1.db(), "insert into table1 (col1,col2) values(?1,?2)");
+        statement insert(db1.db(), "insert into table1 (col1,col2) values(?1,?2)");
         query<int> query1(db1.db(), "select col1 from table1 order by col1 asc");
 
         {
@@ -164,18 +164,17 @@ int test_main(int, char **)
         test_db db1("statement_copy_test.db");
         db1.db().execute_sql(table_def);
 
-        typedef statement<int,string> insert_t;
         typedef query<int,string> query_t;
 
-        insert_t inserter(db1.db(), "insert into table1 (col1,col2) values(?1,?2)");
+        statement inserter(db1.db(), "insert into table1 (col1,col2) values(?1,?2)");
         query_t query1(db1.db(), "select col1,col2 from table1 order by col1 asc");
 
         inserter(1,"first");
 
-        insert_t inserter_copy = inserter;
+        statement inserter_copy = inserter;
         inserter_copy(2,"second");
 
-        insert_t inserter_assign;
+        statement inserter_assign;
         inserter_assign = inserter;
         inserter_assign(3,"third");
 
@@ -219,10 +218,9 @@ int test_main(int, char **)
         test_db db1("blob_test.db");
         db1.db().execute_sql(table_def2);
 
-        typedef statement<int,blob_type> insert_t;
         typedef query<int,blob_type> query_t;
 
-        insert_t inserter(db1.db(), "insert into table1 (col1,col2) values(?1,?2)");
+        statement inserter(db1.db(), "insert into table1 (col1,col2) values(?1,?2)");
         query_t query1(db1.db(), "select col1,col2 from table1 order by col1 asc");
 
         // Prepare the blob with some data
