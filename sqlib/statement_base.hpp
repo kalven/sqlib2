@@ -97,6 +97,12 @@ namespace sqlib
             prepare();
         }
 
+        void prepare(database& db, const std::string& sql)
+        {
+            statement_base tmp(db, sql);
+            swap(tmp);
+        }
+
         ~statement_base()
         {
             if(m_prepared)
