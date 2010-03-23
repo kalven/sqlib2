@@ -1,12 +1,14 @@
 project sqlib2
     : requirements
-        <cxxflags>-std=c++0x
-        <include>.
         <variant>debug:<define>SQLIB_TRACING ;
 
 import testing ;
 
-lib dl pthread sqlite3 ;
+ext_libs = dl pthread sqlite3 ;
 
-unit-test basic_test : tests/basic_test.cpp sqlite3 dl pthread ;
-unit-test db_test    : tests/db_test.cpp sqlite3 dl pthread ;
+lib $(ext_libs) ;
+
+alias sqlib2 : $(ext_libs) : : : <include>. <cxxflags>-std=c++0x ;
+
+unit-test basic_test : tests/basic_test.cpp sqlib2 ;
+unit-test db_test    : tests/db_test.cpp sqlib2 ;
