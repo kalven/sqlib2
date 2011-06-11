@@ -34,6 +34,11 @@ namespace sqlib
             dest = sqlite3_column_int64(stmt, col);
         }
 
+        inline void extract_sql_column(sqlite3_stmt* stmt, int col, double& dest)
+        {
+            dest = sqlite3_column_double(stmt, col);
+        }
+
         inline void extract_sql_column(sqlite3_stmt* stmt, int col, blob_type& dest)
         {
             int bytes = sqlite3_column_bytes(stmt, col);
@@ -57,6 +62,11 @@ namespace sqlib
         inline void bind_arg(sqlite3_stmt* stmt, int slot, const std::int64_t& arg)
         {
             sqlite3_bind_int64(stmt, slot, arg);
+        }
+
+        inline void bind_arg(sqlite3_stmt* stmt, int slot, const double& arg)
+        {
+            sqlite3_bind_double(stmt, slot, arg);
         }
 
         inline void bind_arg(sqlite3_stmt* stmt, int slot, const blob_type& arg)
