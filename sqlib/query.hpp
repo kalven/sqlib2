@@ -2,7 +2,6 @@
 #define SQLIB_QUERY_HPP
 
 #include "statement_base.hpp"
-#include "tracing.hpp"
 
 #include <boost/mpl/for_each.hpp>
 #include <boost/mpl/range_c.hpp>
@@ -27,10 +26,24 @@ namespace sqlib
         {
         }
 
+        query(query&& rhs)
+          : statement_base(std::move(rhs))
+          , m_has_data(false)
+        {
+        }
+
         query(const query& rhs)
           : statement_base(rhs)
           , m_has_data(false)
         {
+        }
+
+        query& operator=(query&& rhs)
+        {
+            statement_base::operator=(std::move(rhs));
+            m_has_data = false;
+
+            return *this;
         }
 
         query& operator=(const query& rhs)

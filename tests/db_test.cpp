@@ -6,7 +6,6 @@
 #include "sqlib/statement.hpp"
 #include "sqlib/query.hpp"
 #include "sqlib/transaction.hpp"
-#include "sqlib/tracing.hpp"
 
 #include "test_util.hpp"
 
@@ -16,25 +15,25 @@ using std::string;
 int test_main(int, char**)
 {
     {
-        test_db db1("db_test.db");
+        database db1(":memory:");
 
-        db1.db().execute_sql("create table tags (tag text)");
-        db1.db().execute_sql("create table node_tags (node integer, tag_id integer)");
-        db1.db().execute_sql("create table keys (key text)");
-        db1.db().execute_sql("create table node_meta (node integer, key_id integer, value text)");
-        db1.db().execute_sql("create table links (from_node integer, to_node integer)");
+        db1.execute_sql("create table tags (tag text)");
+        db1.execute_sql("create table node_tags (node integer, tag_id integer)");
+        db1.execute_sql("create table keys (key text)");
+        db1.execute_sql("create table node_meta (node integer, key_id integer, value text)");
+        db1.execute_sql("create table links (from_node integer, to_node integer)");
 
-        statement add_tag(db1.db(), "insert into tags values(?1)");
-        statement add_key(db1.db(), "insert into keys values(?1)");
-        statement add_node_tag(db1.db(), "insert into node_tags values(?1,?2)");
-        statement add_node_meta(db1.db(), "insert into node_meta values(?1,?2,?3)");
-        statement add_link(db1.db(), "insert into links values(?1,?2)");
+        statement add_tag(db1, "insert into tags values(?1)");
+        statement add_key(db1, "insert into keys values(?1)");
+        statement add_node_tag(db1, "insert into node_tags values(?1,?2)");
+        statement add_node_meta(db1, "insert into node_meta values(?1,?2,?3)");
+        statement add_link(db1, "insert into links values(?1,?2)");
 
-        query<string,string> get_node_meta(db1.db(), "select key,value from keys,node_meta where node_meta.node = ?1 and node_meta.key_id = keys.rowid order by key");
-        query<string>        get_tags_by_node(db1.db(), "select tag from tags,node_tags where node_tags.node = ?1 and node_tags.tag_id = tags.rowid order by tag");
-        query<int>           get_nodes_by_tag(db1.db(), "select node from tags,node_tags where tag = ?1 and node_tags.tag_id = tags.rowid order by node");
-        query<int>           get_outgoing_links(db1.db(), "select to_node from links where from_node = ?1 order by to_node");
-        query<int>           get_incoming_links(db1.db(), "select from_node from links where to_node = ?1 order by from_node");
+        query<string,string> get_node_meta(db1, "select key,value from keys,node_meta where node_meta.node = ?1 and node_meta.key_id = keys.rowid order by key");
+        query<string>        get_tags_by_node(db1, "select tag from tags,node_tags where node_tags.node = ?1 and node_tags.tag_id = tags.rowid order by tag");
+        query<int>           get_nodes_by_tag(db1, "select node from tags,node_tags where tag = ?1 and node_tags.tag_id = tags.rowid order by node");
+        query<int>           get_outgoing_links(db1, "select to_node from links where from_node = ?1 order by to_node");
+        query<int>           get_incoming_links(db1, "select from_node from links where to_node = ?1 order by from_node");
 
         add_key("name")("content-type");
 
@@ -89,15 +88,13 @@ int test_main(int, char**)
         get_incoming_links(2);
         CHECK_ROW1(get_incoming_links, 3);
         CHECK_DONE(get_incoming_links);
-
-        db1.remove_on_close();
     }
 
     {
-        test_db db1("db_test.db");
+        database db1(":memory:");
 
-        db1.db().execute_sql("create table nodes (node integer primary key)");
-        statement create_node(db1.db(), "insert into nodes values(?1)");
+        db1.execute_sql("create table nodes (node integer primary key)");
+        statement create_node(db1, "insert into nodes values(?1)");
 
         create_node(1);
 
@@ -111,8 +108,6 @@ int test_main(int, char**)
             caught_exception = true;
         }
         BOOST_CHECK(caught_exception == true);
-
-        db1.remove_on_close();
     }
 
     {

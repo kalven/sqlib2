@@ -2,10 +2,10 @@
 #define SQLIB_DATABASE_HPP
 
 #include <string>
+#include <iostream>
 
 #include "sqlib.hpp"
 #include "error.hpp"
-#include "tracing.hpp"
 
 #include <sqlite3.h>
 
@@ -21,9 +21,22 @@ namespace sqlib
             sqlite3_open(filename, &m_sqlite);
         }
 
+        database(database&& rhs)
+          : m_sqlite(rhs.m_sqlite)
+        {
+            rhs.m_sqlite = 0;
+        }
+
         ~database()
         {
-            sqlite3_close(m_sqlite);
+            if(m_sqlite)
+                sqlite3_close(m_sqlite);
+        }
+
+        database& operator=(database&& rhs)
+        {
+            std::swap(m_sqlite, rhs.m_sqlite);
+            return *this;
         }
 
         sqlite3* get()
@@ -33,7 +46,6 @@ namespace sqlib
 
         void execute_sql(const std::string& sql)
         {
-            SQLIB_TRACE("execute_sql(" << sql << ")");
             char* errmsg;
 
             if(sqlite3_exec(m_sqlite, sql.c_str(), 0, 0, &errmsg) != SQLITE_OK)
@@ -44,9 +56,20 @@ namespace sqlib
             }
         }
 
+        void enable_trace(std::ostream& os)
+        {
+            sqlite3_trace(m_sqlite,
+                [](void* s, const char* msg) { (*static_cast<std::ostream*>(s)) << msg << '\n'; }, &os);
+        }
+
+        void disable_trace()
+        {
+            sqlite3_trace(m_sqlite, 0, 0);
+        }
+
       private:
 
-        sqlite3 * m_sqlite;
+        sqlite3* m_sqlite;
     };
 }
 

@@ -3,7 +3,6 @@
 
 #include "database.hpp"
 #include "error.hpp"
-#include "tracing.hpp"
 #include "null.hpp"
 
 #include <string>
@@ -80,6 +79,15 @@ namespace sqlib
         {
         }
 
+        statement_base(statement_base&& rhs)
+          : m_prepared(rhs.m_prepared)
+          , m_db(rhs.m_db)
+          , m_sql(std::move(rhs.m_sql))
+        {
+            rhs.m_prepared = 0;
+            rhs.m_db = 0;
+        }
+
         statement_base(const statement_base& rhs)
           : m_prepared(0)
           , m_db(rhs.m_db)
@@ -107,6 +115,13 @@ namespace sqlib
         {
             if(m_prepared)
                 sqlite3_finalize(m_prepared);
+        }
+
+        statement_base& operator=(statement_base&& rhs)
+        {
+            swap(rhs);
+
+            return *this;
         }
 
         statement_base& operator=(const statement_base& rhs)
