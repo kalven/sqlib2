@@ -12,7 +12,44 @@ sqlib2 requires:
 
 ## Usage
 
-See tests/basic_test.cpp for now.
+sqlib2 provides three basic classes for working with an sqlite3 database:
+
+ * database - holds the sqlite3 C object and provides functionality for tracing and executing one-shot
+   pieces of SQL.
+ * statement - represents a prepared statement which doesn't return data (e.g. INSERT, UPDATE).
+ * query - a prepared statement which returns data (e.g. SELECT).
+
+Here is a complete example which creates a table, inserts a few rows and then reads them back:
+
+```cpp
+#include <string>
+#include <iostream>
+
+#include "sqlib/statement.hpp"
+#include "sqlib/database.hpp"
+#include "sqlib/query.hpp"
+
+int main()
+{
+    sqlib::database db(":memory:");
+    db.execute_sql("CREATE TABLE tab (col1 INTEGER, col2 TEXT)");
+
+    sqlib::statement insert(db, "INSERT INTO tab (col1, col2) VALUES(?1, ?2)");
+
+    insert(1, "first");
+    insert(2, "second");
+
+    sqlib::query<int, std::string> qry(db, "SELECT col1,col2 FROM tab");
+
+    for(qry(); qry; ++qry)
+    {
+        std::cout << std::get<0>(*qry) << ", "
+                  << std::get<1>(*qry) << std::endl;
+    }
+}
+```
+
+see tests/basic_test.cpp for more examples.
 
 ## License
 
