@@ -1,10 +1,6 @@
 #include <boost/test/minimal.hpp>
 
-#include "sqlib/database.hpp"
-#include "sqlib/statement.hpp"
-#include "sqlib/query.hpp"
-#include "sqlib/transaction.hpp"
-
+#include "sqlib/all.hpp"
 #include "test_util.hpp"
 
 #include <sstream>
@@ -227,7 +223,7 @@ int test_main(int, char **)
 
     // move assignment operator
     {
-        database db1(":memory"), db2(":memory:");
+        database db1(":memory:"), db2(":memory:");
         db1 = std::move(db2);
     }
 
@@ -256,6 +252,27 @@ int test_main(int, char **)
         query1(1,2);
 
         BOOST_CHECK(os.str() == "select 3+5\n");
+    }
+
+    // range test
+    {
+        database db1(":memory:");
+        db1.execute_sql(table_def);
+
+        std::vector<std::pair<int, string>> data =
+            {{1, "first"}, {2, "second"}, {3, "third"}};
+
+        statement insert1(db1, "insert into table1 (col1,col2) values(?1,?2)");
+        for(const auto& row : data)
+            insert1(row.first, row.second);
+
+        decltype (data) result;
+
+        query<int,string> query1(db1, "select col1,col2 from table1");
+        for(const auto& row : query1())
+            result.push_back({ std::get<0>(row), std::get<1>(row) });
+
+        BOOST_CHECK(data == result);
     }
 
     return 0;

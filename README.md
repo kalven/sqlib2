@@ -25,9 +25,7 @@ Here is a complete example which creates a table, inserts a few rows and then re
 #include <string>
 #include <iostream>
 
-#include "sqlib/statement.hpp"
-#include "sqlib/database.hpp"
-#include "sqlib/query.hpp"
+#include "sqlib/all.hpp"
 
 int main()
 {
@@ -41,10 +39,10 @@ int main()
 
     sqlib::query<int, std::string> qry(db, "SELECT col1,col2 FROM tab");
 
-    for(qry(); qry; ++qry)
+    for(const auto& row : qry())
     {
-        std::cout << std::get<0>(*qry) << ", "
-                  << std::get<1>(*qry) << std::endl;
+        std::cout << std::get<0>(row) << ", "
+                  << std::get<1>(row) << std::endl;
     }
 }
 ```

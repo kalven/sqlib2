@@ -2,11 +2,7 @@
 
 #include <iostream>
 
-#include "sqlib/database.hpp"
-#include "sqlib/statement.hpp"
-#include "sqlib/query.hpp"
-#include "sqlib/transaction.hpp"
-
+#include "sqlib/all.hpp"
 #include "test_util.hpp"
 
 using namespace sqlib;

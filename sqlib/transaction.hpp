@@ -2,11 +2,12 @@
 #define SQLIB_TRANSACTION_HPP
 
 #include "sqlib.hpp"
+#include "database.hpp"
+
+#include <cassert>
 
 namespace sqlib
 {
-    class database;
-
     class transaction_lock
     {
         SQLIB_NOCOPY(transaction_lock);
