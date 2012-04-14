@@ -9,6 +9,7 @@
 #include <vector>
 #include <cstdint>
 #include <cassert>
+#include <cstring>
 #include <algorithm>
 
 #include <sqlite3.h>
@@ -45,8 +46,7 @@ namespace sqlib
             const char* data = reinterpret_cast<const char*>(sqlite3_column_blob(stmt, col));
 
             dest.resize(bytes);
-            if(bytes > 0)
-                std::copy(data, data+bytes, dest.begin());
+            std::memcpy(dest.data(), data, bytes);
         }
 
         inline void bind_arg(sqlite3_stmt* stmt, int slot, const std::string& arg)
