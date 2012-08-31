@@ -1,5 +1,3 @@
-#include <boost/test/minimal.hpp>
-
 #include <iostream>
 
 #include "sqlib/all.hpp"
@@ -8,7 +6,7 @@
 using namespace sqlib;
 using std::string;
 
-int test_main(int, char**)
+int main()
 {
     {
         database db1(":memory:");
@@ -103,7 +101,7 @@ int test_main(int, char**)
         {
             caught_exception = true;
         }
-        BOOST_CHECK(caught_exception == true);
+        SQLIB_CHECK(caught_exception == true);
     }
 
     {
@@ -115,7 +113,7 @@ int test_main(int, char**)
         std::int64_t id1 = create(null).last_insert_id();
         std::int64_t id2 = create(null).last_insert_id();
 
-        BOOST_CHECK(id1 != id2);
+        SQLIB_CHECK(id1 != id2);
     }
 
     return 0;

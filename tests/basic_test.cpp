@@ -1,5 +1,3 @@
-#include <boost/test/minimal.hpp>
-
 #include "sqlib/all.hpp"
 #include "test_util.hpp"
 
@@ -8,7 +6,7 @@
 using namespace sqlib;
 using std::string;
 
-int test_main(int, char **)
+int main()
 {
     const char * const table_def = "create table table1 (col1 integer, col2 text)";
     const char * const table_def2 = "create table table1 (col1 integer, col2 blob)";
@@ -19,12 +17,12 @@ int test_main(int, char **)
         query<int> add1(db1, "select ?1+?2");
         add1(3,4);
 
-        BOOST_CHECK(has_data(add1) == true);
+        SQLIB_CHECK(has_data(add1) == true);
         CHECK_ROW1(add1, 7);
 
         query<string> add2(db1, "select ?1+?2");
         add2(3,4);
-        BOOST_CHECK(has_data(add2) == true);
+        SQLIB_CHECK(has_data(add2) == true);
         CHECK_ROW1(add2, "7");
     }
 
@@ -35,7 +33,7 @@ int test_main(int, char **)
         query<int,string> query1(db1, "select col1,col2 from table1");
         query1();
 
-        BOOST_CHECK(has_data(query1) == false);
+        SQLIB_CHECK(has_data(query1) == false);
     }
 
     {
@@ -63,9 +61,9 @@ int test_main(int, char **)
         insert(1,"first")(2,"second")(3,"third");
 
         statement update1(db1, "update table1 set col2=?1 where col1=?2");
-        BOOST_CHECK(update1("uno",1).affected_rows() == 1);
-        BOOST_CHECK(update1("dos",2).affected_rows() == 1);
-        BOOST_CHECK(update1("tres",3).affected_rows() == 1);
+        SQLIB_CHECK(update1("uno",1).affected_rows() == 1);
+        SQLIB_CHECK(update1("dos",2).affected_rows() == 1);
+        SQLIB_CHECK(update1("tres",3).affected_rows() == 1);
 
         query<int,string> query1(db1, "select col1, col2 from table1 order by col1 asc");
         query1();
@@ -84,18 +82,18 @@ int test_main(int, char **)
         insert(1,"first")(2,"second")(3,"third");
 
         statement delete1(db1, "delete from table1 where col2=?1");
-        BOOST_CHECK(delete1("third").affected_rows() == 1);
+        SQLIB_CHECK(delete1("third").affected_rows() == 1);
 
         query<string> query1(db1, "select col2 from table1 order by col1 asc");
         query1();
 
-        BOOST_REQUIRE(has_data(query1));
+        SQLIB_REQUIRE(has_data(query1));
         CHECK_ROW1(query1, "first");
         CHECK_ROW1(query1, "second");
         CHECK_DONE(query1);
 
-        BOOST_CHECK(delete1("first").affected_rows() == 1);
-        BOOST_CHECK(delete1("second").affected_rows() == 1);
+        SQLIB_CHECK(delete1("first").affected_rows() == 1);
+        SQLIB_CHECK(delete1("second").affected_rows() == 1);
 
         query1();
         CHECK_DONE(query1);
@@ -111,8 +109,8 @@ int test_main(int, char **)
         {
             // Start a transaction
             transaction_lock lock(db1);
-            BOOST_CHECK(insert(1,"first").affected_rows() == 1);
-            BOOST_CHECK(insert(2,"second").affected_rows() == 1);
+            SQLIB_CHECK(insert(1,"first").affected_rows() == 1);
+            SQLIB_CHECK(insert(2,"second").affected_rows() == 1);
 
             query1();
             CHECK_ROW1(query1, 1);
@@ -246,12 +244,12 @@ int test_main(int, char **)
         CHECK_ROW1(query1, 8);
         CHECK_DONE(query1);
 
-        BOOST_CHECK(os.str() == "select 3+5\n");
+        SQLIB_CHECK(os.str() == "select 3+5\n");
 
         db1.disable_trace();
         query1(1,2);
 
-        BOOST_CHECK(os.str() == "select 3+5\n");
+        SQLIB_CHECK(os.str() == "select 3+5\n");
     }
 
     // range test
@@ -272,7 +270,7 @@ int test_main(int, char **)
         for(const auto& row : query1())
             result.push_back({ std::get<0>(row), std::get<1>(row) });
 
-        BOOST_CHECK(data == result);
+        SQLIB_CHECK(data == result);
     }
 
     return 0;

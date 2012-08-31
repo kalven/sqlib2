@@ -3,13 +3,42 @@
 
 #include "statement_base.hpp"
 
-#include <boost/mpl/for_each.hpp>
-#include <boost/mpl/range_c.hpp>
-
 #include <tuple>
 
 namespace sqlib
 {
+    template<int Low, int High>
+    struct for_iter
+    {
+        static_assert(Low < High, "Low < High");
+
+        template<int C>
+        struct int_c
+        {
+            enum { value = C };
+        };
+
+        template<class T>
+        static void fun(T& op)
+        {
+            op(int_c<Low>());
+            for_iter<Low+1, High>::fun(op);
+        }
+    };
+
+    template<int Same>
+    struct for_iter<Same, Same>
+    {
+        template<class T>
+        static void fun(T&) {}
+    };
+
+    template<int Count, class T>
+    void ct_for(T& op)
+    {
+        for_iter<0, Count>::fun(op);
+    }
+
     template<class... Cols>
     class query : public statement_base
     {
@@ -71,8 +100,9 @@ namespace sqlib
             if(sqlite3_step(m_prepared) == SQLITE_ROW)
             {
                 m_has_data = true;
-                typedef boost::mpl::range_c<int, 0, sizeof...(Cols)> range_type;
-                boost::mpl::for_each<range_type>(column_extractor(m_prepared,m_row));
+
+                column_extractor ex(m_prepared, m_row);
+                ct_for<sizeof...(Cols)>(ex);
             }
             else
             {

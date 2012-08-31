@@ -58,8 +58,7 @@ namespace sqlib
 
         void enable_trace(std::ostream& os)
         {
-            sqlite3_trace(m_sqlite,
-                [](void* s, const char* msg) { (*static_cast<std::ostream*>(s)) << msg << '\n'; }, &os);
+            sqlite3_trace(m_sqlite, &database::trace_fn, &os);
         }
 
         void disable_trace()
@@ -68,6 +67,11 @@ namespace sqlib
         }
 
       private:
+
+        static void trace_fn(void* s, const char* msg)
+        {
+            (*static_cast<std::ostream*>(s)) << msg << '\n';
+        }
 
         sqlite3* m_sqlite;
     };
