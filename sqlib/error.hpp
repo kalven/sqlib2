@@ -3,57 +3,47 @@
 
 #include <stdexcept>
 
-namespace sqlib
-{
-    class sql_error : public std::logic_error
-    {
-      public:
-        sql_error()
-          : std::logic_error("sql_error")
-        {
-        }
+namespace sqlib {
 
-        sql_error(const std::string & msg)
-          : std::logic_error("sql_error: " + msg)
-        {
-        }
-    };
+class sql_error : public std::logic_error {
+ public:
+  sql_error()
+   : std::logic_error("sql_error") {
+  }
 
-    class prepare_error : public sql_error
-    {
-      public:
-        prepare_error(const std::string & sql)
-          : sql_error("prepare failed with \"" + sql + "\"")
-        {
-        }
-    };
+  sql_error(const std::string & msg)
+   : std::logic_error("sql_error: " + msg) {
+  }
+};
 
-    class execute_error : public sql_error
-    {
-      public:
-        execute_error(const std::string & msg)
-          : sql_error("execute_query failed: \"" + msg + "\"")
-        {
-        }
-    };
+class prepare_error : public sql_error {
+ public:
+  prepare_error(const std::string & sql)
+   : sql_error("prepare failed with \"" + sql + "\"") {
+  }
+};
 
-    class busy_error : public sql_error
-    {
-      public:
-        busy_error()
-          : sql_error("busy")
-        {
-        }
-    };
+class execute_error : public sql_error {
+ public:
+  execute_error(const std::string & msg)
+   : sql_error("execute_query failed: \"" + msg + "\"") {
+  }
+};
 
-    class misuse_error : public sql_error
-    {
-      public:
-        misuse_error()
-          : sql_error("misuse")
-        {
-        }
-    };
-}
+class busy_error : public sql_error {
+ public:
+  busy_error()
+   : sql_error("busy") {
+  }
+};
+
+class misuse_error : public sql_error {
+ public:
+  misuse_error()
+   : sql_error("misuse") {
+  }
+};
+
+} // sqlib
 
 #endif

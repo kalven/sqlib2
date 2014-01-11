@@ -5,38 +5,33 @@
 
 namespace sqlib
 {
-    class statement : public statement_base
-    {
-      public:
-        statement()
-        {
-        }
 
-        statement(database& db, const std::string& sql)
-          : statement_base(db, sql)
-        {
-        }
+class statement : public statement_base {
+ public:
+  statement() = default;
 
-        template<class... Args>
-        statement& operator()(const Args&... args)
-        {
-            assert(m_prepared);
-            reset();
-            bind_args(1, args...);
-            execute_query();
-            return *this;
-        }
+  statement(database& db, const std::string& sql)
+   : statement_base(db, sql) {
+  }
 
-        int affected_rows()
-        {
-            return sqlite3_changes(m_db);
-        }
+  template<class... Args>
+  statement& operator()(const Args&... args) {
+    assert(m_prepared);
+    reset();
+    bind_args(1, args...);
+    step();
+    return *this;
+  }
 
-        std::int64_t last_insert_id()
-        {
-            return sqlite3_last_insert_rowid(m_db);
-        }
-    };
-}
+  int affected_rows() {
+    return sqlite3_changes(m_db);
+  }
+
+  std::int64_t last_insert_id() {
+    return sqlite3_last_insert_rowid(m_db);
+  }
+};
+
+} // sqlib
 
 #endif

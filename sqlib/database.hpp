@@ -4,77 +4,66 @@
 #include <string>
 #include <iostream>
 
-#include "sqlib.hpp"
 #include "error.hpp"
 
 #include <sqlite3.h>
 
-namespace sqlib
-{
-    class database
-    {
-        SQLIB_NOCOPY(database);
+namespace sqlib {
 
-      public:
-        database(const char* filename)
-        {
-            sqlite3_open(filename, &m_sqlite);
-        }
+class database {
+ public:
+  database(const char* filename) {
+    sqlite3_open(filename, &m_sqlite);
+  }
 
-        database(database&& rhs)
-          : m_sqlite(rhs.m_sqlite)
-        {
-            rhs.m_sqlite = 0;
-        }
+  database(database&& rhs)
+   : m_sqlite(rhs.m_sqlite) {
+    rhs.m_sqlite = 0;
+  }
 
-        ~database()
-        {
-            if(m_sqlite)
-                sqlite3_close(m_sqlite);
-        }
+  ~database() {
+    if(m_sqlite)
+      sqlite3_close(m_sqlite);
+  }
 
-        database& operator=(database&& rhs)
-        {
-            std::swap(m_sqlite, rhs.m_sqlite);
-            return *this;
-        }
+  database(const database&) = delete;
+  database& operator=(const database&) = delete;
 
-        sqlite3* get()
-        {
-            return m_sqlite;
-        }
+  database& operator=(database&& rhs) {
+    std::swap(m_sqlite, rhs.m_sqlite);
+    return *this;
+  }
 
-        void execute_sql(const std::string& sql)
-        {
-            char* errmsg;
+  sqlite3* get() {
+    return m_sqlite;
+  }
 
-            if(sqlite3_exec(m_sqlite, sql.c_str(), 0, 0, &errmsg) != SQLITE_OK)
-            {
-                sql_error ex(errmsg);
-                sqlite3_free(errmsg);
-                throw ex;
-            }
-        }
+  void execute_sql(const std::string& sql) {
+    char* errmsg;
 
-        void enable_trace(std::ostream& os)
-        {
-            sqlite3_trace(m_sqlite, &database::trace_fn, &os);
-        }
+    if(sqlite3_exec(m_sqlite, sql.c_str(), 0, 0, &errmsg) != SQLITE_OK) {
+      sql_error ex(errmsg);
+      sqlite3_free(errmsg);
+      throw ex;
+    }
+  }
 
-        void disable_trace()
-        {
-            sqlite3_trace(m_sqlite, 0, 0);
-        }
+  void enable_trace(std::ostream& os) {
+    sqlite3_trace(m_sqlite, &database::trace_fn, &os);
+  }
 
-      private:
+  void disable_trace() {
+    sqlite3_trace(m_sqlite, 0, 0);
+  }
 
-        static void trace_fn(void* s, const char* msg)
-        {
-            (*static_cast<std::ostream*>(s)) << msg << '\n';
-        }
+ private:
+  static void trace_fn(void* s, const char* msg) {
+    (*static_cast<std::ostream*>(s)) << msg << '\n';
+  }
 
-        sqlite3* m_sqlite;
-    };
-}
+  sqlite3* m_sqlite;
+};
+
+} // sqlib
 
 #endif

@@ -3,11 +3,12 @@
 
 namespace sqlib
 {
-    class null_type
-    {
-    };
 
-    const null_type null = null_type();
-}
+class null_type {
+};
+
+const null_type null = null_type();
+
+} // sqlib
 
 #endif
