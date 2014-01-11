@@ -1,7 +1,7 @@
-#ifndef SQLIB_RANGE_HPP
-#define SQLIB_RANGE_HPP
+#ifndef SQLIB_RANGE_H
+#define SQLIB_RANGE_H
 
-#include "query.hpp"
+#include "query.h"
 #include "dynquery.h"
 
 #include <iterator>

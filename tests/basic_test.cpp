@@ -1,5 +1,5 @@
-#include "sqlib/all.hpp"
-#include "test_util.hpp"
+#include "sqlib/all.h"
+#include "test_util.h"
 
 #include <sstream>
 

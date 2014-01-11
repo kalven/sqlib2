@@ -1,7 +1,7 @@
-#ifndef SQLIB_TRANSACTION_HPP
-#define SQLIB_TRANSACTION_HPP
+#ifndef SQLIB_TRANSACTION_H
+#define SQLIB_TRANSACTION_H
 
-#include "database.hpp"
+#include "database.h"
 
 #include <cassert>
 

@@ -1,7 +1,7 @@
-#ifndef SQLIB_QUERY_HPP
-#define SQLIB_QUERY_HPP
+#ifndef SQLIB_QUERY_H
+#define SQLIB_QUERY_H
 
-#include "statement_base.hpp"
+#include "statement_base.h"
 
 #include <tuple>
 

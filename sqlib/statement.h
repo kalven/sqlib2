@@ -1,7 +1,7 @@
-#ifndef SQLIB_STATEMENT_HPP
-#define SQLIB_STATEMENT_HPP
+#ifndef SQLIB_STATEMENT_H
+#define SQLIB_STATEMENT_H
 
-#include "statement_base.hpp"
+#include "statement_base.h"
 
 namespace sqlib
 {

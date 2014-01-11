@@ -1,5 +1,5 @@
-#ifndef SQLIB_ERROR_HPP
-#define SQLIB_ERROR_HPP
+#ifndef SQLIB_ERROR_H
+#define SQLIB_ERROR_H
 
 #include <stdexcept>
 

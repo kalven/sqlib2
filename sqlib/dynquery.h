@@ -1,7 +1,7 @@
-#ifndef SQLIB_DYNQUERY_HPP
-#define SQLIB_DYNQUERY_HPP
+#ifndef SQLIB_DYNQUERY_H
+#define SQLIB_DYNQUERY_H
 
-#include "statement_base.hpp"
+#include "statement_base.h"
 
 namespace sqlib {
 
@@ -83,6 +83,6 @@ class dynquery : public statement_base {
   bool m_has_data;
 };
 
-}
+} // sqlib
 
 #endif

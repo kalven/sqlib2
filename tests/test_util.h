@@ -1,10 +1,10 @@
-#ifndef SQLIB_TEST_UTIL_HPP
-#define SQLIB_TEST_UTIL_HPP
+#ifndef SQLIB_TEST_UTIL_H
+#define SQLIB_TEST_UTIL_H
 
 #include <algorithm>
 #include <cstdlib>
 
-#include "sqlib/database.hpp"
+#include "sqlib/database.h"
 
 template<class Query>
 bool has_data(const Query & q)

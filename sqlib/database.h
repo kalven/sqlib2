@@ -1,10 +1,10 @@
-#ifndef SQLIB_DATABASE_HPP
-#define SQLIB_DATABASE_HPP
+#ifndef SQLIB_DATABASE_H
+#define SQLIB_DATABASE_H
 
 #include <string>
 #include <iostream>
 
-#include "error.hpp"
+#include "error.h"
 
 #include <sqlite3.h>
 

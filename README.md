@@ -24,7 +24,7 @@ Here is a complete example which creates a table, inserts a few rows and then re
 #include <string>
 #include <iostream>
 
-#include "sqlib/all.hpp"
+#include "sqlib/all.h"
 
 int main()
 {

@@ -1,9 +1,9 @@
-#ifndef SQLIB_STATEMENT_BASE_HPP
-#define SQLIB_STATEMENT_BASE_HPP
+#ifndef SQLIB_STATEMENT_BASE_H
+#define SQLIB_STATEMENT_BASE_H
 
-#include "database.hpp"
-#include "error.hpp"
-#include "null.hpp"
+#include "database.h"
+#include "error.h"
+#include "null.h"
 
 #include <string>
 #include <vector>
